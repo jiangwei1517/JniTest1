@@ -13,16 +13,18 @@ public class JniTest1 {
 	public native void changeAge();
 
 	public native void callMethod();
-	
+
 	public native void callStaticMethod();
-	
+
 	public native long callConstructors();
-	
+
 	public native void callSuperMethod();
-	
-	public Man man  = new Man();
-	
+
+	public Man man = new Man();
+
 	public native String getString(String name);
+
+	public native int[] sortArray(int[] array);
 
 	static {
 		System.loadLibrary("jiangweijni");
@@ -44,17 +46,24 @@ public class JniTest1 {
 		t.callMethod();
 		// 访问静态方法
 		t.callStaticMethod();
-		
+
 		// 访问构造方法
 		long time = t.callConstructors();
-		System.out.println("time = "+time);
-		
+		System.out.println("time = " + time);
+
 		// 访问父类的方法
 		t.callSuperMethod();
-		
+
 		// 向C中传递字符串
 		String newString = t.getString("小姜");
 		System.out.println(newString);
+
+		// C语言排序
+		int[] sorts = { 1, 8, 4, 5, 88, 2 };
+		int[] newSort = t.sortArray(sorts);
+		for (int i = 0; i < newSort.length; i++) {
+			System.out.println(newSort[i]);
+		}
 	}
 
 	public int getInt(int i) {
@@ -63,7 +72,7 @@ public class JniTest1 {
 		System.out.println("PRE I = " + i);
 		return i;
 	}
-	
+
 	public static String getMax(String max) {
 		return max;
 	}

@@ -33,6 +33,8 @@ JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_callSuperMethod
 JNIEXPORT jstring JNICALL Java_com_jiangwei_JniTest1_getString
     (JNIEnv *, jobject, jstring);
     
+JNIEXPORT jintArray JNICALL Java_com_jiangwei_JniTest1_sortArray
+    (JNIEnv *, jobject, jintArray);
 #ifdef __cplusplus
 }
 #endif

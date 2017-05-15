@@ -913,8 +913,20 @@ JNIEXPORT jstring JNICALL Java_com_jiangwei_JniTest1_getString
     jmethodID cons_mid = (*env)->GetMethodID(env, clz, "<init>", "([BLjava/lang/String;)V");
     jbyteArray byte_array = (*env)->NewByteArray(env, strlen(new_str));
     (*env)->SetByteArrayRegion(env, byte_array, 0, strlen(new_str), new_str);
-    jstring format_str = (*env)->NewObject(env, clz, cons_mid, byte_array, (*env)->NewStringUTF(env, "UTF-8"));
+    jstring format_str = (*env)->NewObject(env, clz, cons_mid, byte_array, (*env)->NewStringUTF(env, "GB2312"));
     return format_str;
+}
+
+int sort(int* a, int* b){
+    return (*a)-(*b);
+}
+
+JNIEXPORT jintArray JNICALL Java_com_jiangwei_JniTest1_sortArray
+(JNIEnv* env, jobject jobj, jintArray arr){
+    jint* i = (*env)->GetIntArrayElements(env, arr, JNI_FALSE);
+    qsort(i, (*env)->GetArrayLength(env, arr), sizeof(int), sort);
+    (*env)->ReleaseIntArrayElements (env, arr, i, JNI_COMMIT);
+    return arr;
 }
 
 void main(){
