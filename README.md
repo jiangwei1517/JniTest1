@@ -8,7 +8,7 @@
 
 ## 访问属性
 
-		JNIEXPORT jstring JNICALL Java_com_jiangwei_JniTest1_changeFieldFromC
+	JNIEXPORT jstring JNICALL Java_com_jiangwei_JniTest1_changeFieldFromC
 	(JNIEnv* env, jobject obj){
 	    jclass clz = (*env)->GetObjectClass(env, obj);
 	   	 // 获取java中name属性
@@ -36,7 +36,7 @@
 	
 ## 方法访问
 
-		JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_callMethod
+	JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_callMethod
 	(JNIEnv* env, jobject jobj){
 	    jclass clz = (*env)->GetObjectClass(env, jobj);
 	    jmethodID mid = (*env)->GetMethodID(env, clz, "getInt", "(I)I");
@@ -45,7 +45,7 @@
 	
 ## 静态方法访问
 
-		JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_callStaticMethod
+	JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_callStaticMethod
 	(JNIEnv* env, jobject jobj){
 	    jclass clz = (*env)->GetObjectClass(env, jobj);
 	    jmethodID mid = (*env)->GetStaticMethodID(env, clz, "getMax", "(Ljava/lang/String;)Ljava/lang/String;");
