@@ -880,7 +880,41 @@ JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_callStaticMethod
     jmethodID mid = (*env)->GetStaticMethodID(env, clz, "getMax", "(Ljava/lang/String;)Ljava/lang/String;");
 //    (*env)->NewStringUTF(env, "1990");
     jstring str = (*env)->CallStaticObjectMethod(env, clz, mid, (*env)->NewStringUTF(env, "1990"));
-    printf("getMax = %s", str);
+    printf("getMax = %s\n", (*env)->GetStringUTFChars(env, str, JNI_FALSE));
+}
+
+JNIEXPORT jlong JNICALL Java_com_jiangwei_JniTest1_callConstructors
+(JNIEnv* env, jobject jobj){
+    jclass clz = (*env)->FindClass(env, "java/util/Date");
+    jmethodID mid_constructor = (*env)->GetMethodID(env, clz, "<init>", "()V");
+    jobject date = (*env)->NewObject(env, clz, mid_constructor);
+    jmethodID mid = (*env)->GetMethodID(env, clz, "getTime", "()J");
+    jlong time = (*env)->CallLongMethod(env, date, mid);
+    return time;
+}
+
+JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_callSuperMethod
+(JNIEnv* env, jobject jobj){
+    jclass clz = (*env)->GetObjectClass(env, jobj);
+    jfieldID man_id = (*env)->GetFieldID(env, clz, "man", "Lcom/jiangwei/Man;");
+    jobject obj_person = (*env)->GetObjectField(env, jobj, man_id);
+    jclass person_clz = (*env)->FindClass(env, "com/jiangwei/Person");
+    jmethodID mid = (*env)->GetMethodID(env, person_clz, "getName", "()Ljava/lang/String;");
+    (*env)->CallNonvirtualObjectMethod(env, obj_person, person_clz, mid);
+}
+
+JNIEXPORT jstring JNICALL Java_com_jiangwei_JniTest1_getString
+(JNIEnv* env, jobject jobj, jstring str){
+    printf("从java传过来的字符串是：%s\n", (*env)->GetStringUTFChars(env, str, JNI_FALSE));
+    jstring new_str = (*env)->NewStringUTF(env, "我是小凯");
+    
+    // 字符串乱码问题，解决方案，从java中将UTF-8转成GB2312类型
+    jclass clz = (*env)->FindClass(env, "java/lang/String");
+    jmethodID cons_mid = (*env)->GetMethodID(env, clz, "<init>", "([BLjava/lang/String;)V");
+    jbyteArray byte_array = (*env)->NewByteArray(env, strlen(new_str));
+    (*env)->SetByteArrayRegion(env, byte_array, 0, strlen(new_str), new_str);
+    jstring format_str = (*env)->NewObject(env, clz, cons_mid, byte_array, (*env)->NewStringUTF(env, "UTF-8"));
+    return format_str;
 }
 
 void main(){

@@ -20,7 +20,19 @@ JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_changeAge
     
 JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_callMethod
   (JNIEnv *, jobject);
-
+    
+JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_callStaticMethod
+    (JNIEnv *, jobject);
+    
+JNIEXPORT jlong JNICALL Java_com_jiangwei_JniTest1_callConstructors
+    (JNIEnv *, jobject);
+    
+JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_callSuperMethod
+    (JNIEnv *, jobject);
+    
+JNIEXPORT jstring JNICALL Java_com_jiangwei_JniTest1_getString
+    (JNIEnv *, jobject, jstring);
+    
 #ifdef __cplusplus
 }
 #endif
