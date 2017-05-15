@@ -858,6 +858,31 @@ JNIEXPORT jstring JNICALL Java_com_jiangwei_JniTest1_changeFieldFromC
     return new_str;
 }
 
+JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_changeAge
+(JNIEnv* env, jobject jobj){
+    jclass clz = (*env)->GetObjectClass(env, jobj);
+    jfieldID fid = (*env)->GetStaticFieldID(env, clz, "age", "I");
+    jint i = (*env)->GetStaticIntField(env, clz, fid);
+    i++;
+    (*env)->SetStaticIntField(env, clz, fid, i);
+}
+
+JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_callMethod
+(JNIEnv* env, jobject jobj){
+    jclass clz = (*env)->GetObjectClass(env, jobj);
+    jmethodID mid = (*env)->GetMethodID(env, clz, "getInt", "(I)I");
+    (*env)->CallIntMethod(env, jobj, mid, 200);
+}
+
+JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_callStaticMethod
+(JNIEnv* env, jobject jobj){
+    jclass clz = (*env)->GetObjectClass(env, jobj);
+    jmethodID mid = (*env)->GetStaticMethodID(env, clz, "getMax", "(Ljava/lang/String;)Ljava/lang/String;");
+//    (*env)->NewStringUTF(env, "1990");
+    jstring str = (*env)->CallStaticObjectMethod(env, clz, mid, (*env)->NewStringUTF(env, "1990"));
+    printf("getMax = %s", str);
+}
+
 void main(){
 
 }

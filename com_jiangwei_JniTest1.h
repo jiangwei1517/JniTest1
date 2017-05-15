@@ -14,6 +14,12 @@ extern "C" {
  */
 JNIEXPORT jstring JNICALL Java_com_jiangwei_JniTest1_changeFieldFromC
   (JNIEnv *, jobject);
+    
+JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_changeAge
+  (JNIEnv *, jobject);
+    
+JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_callMethod
+  (JNIEnv *, jobject);
 
 #ifdef __cplusplus
 }
