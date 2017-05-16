@@ -39,11 +39,20 @@ public class JniTest1 {
 	public native String getWeakGlobalRef();
 
 	public native void deleteWeakGlobalRef();
-	
+
 	public native void throwException();
+
+	public static native void init();
+
+	public static String initA = "init";
+
+	public static Man initMan = new Man();
+
+	public native void cache();
 
 	static {
 		System.loadLibrary("jiangweijni");
+		init();
 	}
 
 	public static void main(String[] args) {
@@ -120,9 +129,13 @@ public class JniTest1 {
 			t.throwException();
 		} catch (Exception e) {
 			e.getMessage();
-			System.out.println("异常抛出成功！"+e.getMessage());
+			System.out.println("异常抛出成功！" + e.getMessage());
 		}
 
+		// 初始化数据，启用缓存
+		for (int i = 0; i < 100; i++) {
+			t.cache();
+		}
 	}
 
 	public int getInt(int i) {

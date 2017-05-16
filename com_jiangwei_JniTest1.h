@@ -59,6 +59,12 @@ JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_deleteWeakGlobalRef
     
 JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_throwException
     (JNIEnv *, jobject);
+    
+JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_init
+    (JNIEnv *, jclass);
+    
+JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_cache
+    (JNIEnv *, jobject);
 #ifdef __cplusplus
 }
 #endif

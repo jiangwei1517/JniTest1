@@ -108,17 +108,17 @@ GetIntArrayElements将jintArray转换成C的jint*类型。ReleaseIntArrayElement
 * JNI_ABORT = 2 java代码不修改，但是释放C的内存空间。
 * 0 java代码修改，释放C的内存空间
 
-		int sort(int* a, int* b){
-		    return (*a)-(*b);
-		}
-		
-		JNIEXPORT jintArray JNICALL Java_com_jiangwei_JniTest1_sortArray
-		(JNIEnv* env, jobject jobj, jintArray arr){
-		    jint* i = (*env)->GetIntArrayElements(env, arr, JNI_FALSE);
-		    qsort(i, (*env)->GetArrayLength(env, arr), sizeof(int), sort);
-		    (*env)->ReleaseIntArrayElements (env, arr, i, JNI_COMMIT);
-		    return arr;
-		}
+	int sort(int* a, int* b){
+	    return (*a)-(*b);
+	}
+	
+	JNIEXPORT jintArray JNICALL Java_com_jiangwei_JniTest1_sortArray
+	(JNIEnv* env, jobject jobj, jintArray arr){
+	    jint* i = (*env)->GetIntArrayElements(env, arr, JNI_FALSE);
+	    qsort(i, (*env)->GetArrayLength(env, arr), sizeof(int), sort);
+	    (*env)->ReleaseIntArrayElements (env, arr, i, JNI_COMMIT);
+	    return arr;
+	}
 	
 ## 删除C本地引用
 在C中，只能删除本地引用，不能创建，也不能获取，区别与全局引用。
@@ -202,6 +202,32 @@ GetIntArrayElements将jintArray转换成C的jint*类型。ReleaseIntArrayElement
     if (exception != NULL) {
         (*env)->ExceptionClear(env);
     }
+    
+## 缓存
+
+	// 缓存策略
+	static jstring name;
+	static jobject man;
+	JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_init
+	(JNIEnv* env, jclass jcls){
+	    jfieldID id_name = (*env)->GetStaticFieldID(env, jcls, "initA", "Ljava/lang/String;");
+	    name = (*env)->GetStaticObjectField(env, jcls, id_name);
+	    
+	    jfieldID id_man = (*env)->GetStaticFieldID(env, jcls, "initMan", "Lcom/jiangwei/Man;");
+	    man = (*env)->GetStaticObjectField(env, jcls, id_man);
+	    
+	    printf("初始化的init字段为%s\n", (*env)->GetStringUTFChars(env, name, JNI_FALSE));
+	}
+	
+	JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_cache
+	(JNIEnv* env, jobject jobj){
+	    static jstring name = NULL;
+	    if (name == NULL) {
+	        name = (*env)->NewStringUTF(env, "init只执行了一次");
+	        printf("%s\n", (*env)->GetStringUTFChars(env, name, JNI_FALSE));
+	    }
+	}
+
 
 
 

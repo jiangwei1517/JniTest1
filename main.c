@@ -984,7 +984,7 @@ JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_deleteWeakGlobalRef
     jclass clz = (*env)->GetObjectClass(env, jobj);
     
     // 假设出现了异常，C的异常正常是不会在java中补获，但是会阻塞java后续的执行，ExceptionClear清除C本地的异常，不影响java后续的执行
-    jfieldID mid = (*env)->GetFieldID(env, clz, "woman", "Lcom/jiangwei/Person");
+    jfieldID mid = (*env)->GetFieldID(env, clz, "woman", "Lcom/jiangwei/Person;");
     jthrowable exception = (*env)->ExceptionOccurred(env);
     if (exception != NULL) {
         (*env)->ExceptionClear(env);
@@ -999,6 +999,28 @@ JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_throwException
     (*env)->ThrowNew(env, clz, "Native error Java_com_jiangwei_JniTest1_throwException");
 }
 
+// 缓存策略
+static jstring name;
+static jobject man;
+JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_init
+(JNIEnv* env, jclass jcls){
+    jfieldID id_name = (*env)->GetStaticFieldID(env, jcls, "initA", "Ljava/lang/String;");
+    name = (*env)->GetStaticObjectField(env, jcls, id_name);
+    
+    jfieldID id_man = (*env)->GetStaticFieldID(env, jcls, "initMan", "Lcom/jiangwei/Man;");
+    man = (*env)->GetStaticObjectField(env, jcls, id_man);
+    
+    printf("初始化的init字段为%s\n", (*env)->GetStringUTFChars(env, name, JNI_FALSE));
+}
+
+JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_cache
+(JNIEnv* env, jobject jobj){
+    static jstring name = NULL;
+    if (name == NULL) {
+        name = (*env)->NewStringUTF(env, "init只执行了一次");
+        printf("%s\n", (*env)->GetStringUTFChars(env, name, JNI_FALSE));
+    }
+}
 
 void main(){
     
