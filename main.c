@@ -878,7 +878,7 @@ JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_callStaticMethod
 (JNIEnv* env, jobject jobj){
     jclass clz = (*env)->GetObjectClass(env, jobj);
     jmethodID mid = (*env)->GetStaticMethodID(env, clz, "getMax", "(Ljava/lang/String;)Ljava/lang/String;");
-//    (*env)->NewStringUTF(env, "1990");
+    //    (*env)->NewStringUTF(env, "1990");
     jstring str = (*env)->CallStaticObjectMethod(env, clz, mid, (*env)->NewStringUTF(env, "1990"));
     printf("getMax = %s\n", (*env)->GetStringUTFChars(env, str, JNI_FALSE));
 }
@@ -906,14 +906,18 @@ JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_callSuperMethod
 JNIEXPORT jstring JNICALL Java_com_jiangwei_JniTest1_getString
 (JNIEnv* env, jobject jobj, jstring str){
     printf("从java传过来的字符串是：%s\n", (*env)->GetStringUTFChars(env, str, JNI_FALSE));
-    jstring new_str = (*env)->NewStringUTF(env, "我是小凯");
+    char* new_str = "我是小凯";
     
     // 字符串乱码问题，解决方案，从java中将UTF-8转成GB2312类型
     jclass clz = (*env)->FindClass(env, "java/lang/String");
     jmethodID cons_mid = (*env)->GetMethodID(env, clz, "<init>", "([BLjava/lang/String;)V");
     jbyteArray byte_array = (*env)->NewByteArray(env, strlen(new_str));
+    
+    
+    
     (*env)->SetByteArrayRegion(env, byte_array, 0, strlen(new_str), new_str);
-    jstring format_str = (*env)->NewObject(env, clz, cons_mid, byte_array, (*env)->NewStringUTF(env, "GB2312"));
+    
+    jstring format_str = (*env)->NewObject(env, clz, cons_mid, byte_array, (*env)->NewStringUTF(env, "UTF-8"));
     return format_str;
 }
 
@@ -929,8 +933,75 @@ JNIEXPORT jintArray JNICALL Java_com_jiangwei_JniTest1_sortArray
     return arr;
 }
 
-void main(){
 
+JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_deleteLocalRef
+(JNIEnv* env, jobject jobj){
+    jclass clz = (*env)->FindClass(env, "java/lang/String");
+    jmethodID cons_mid = (*env)->GetMethodID(env, clz, "<init>", "(Ljava/lang/String;)V");
+    jstring new_str = (*env)->NewObject(env, clz, cons_mid, (*env)->NewStringUTF(env, "HelloWorld"));
+    printf("删除之前new_str:%s\n", (*env)->GetStringUTFChars(env, new_str, JNI_FALSE));
+    (*env)->DeleteLocalRef(env, new_str);
+    if ((*env)->GetStringUTFChars(env, new_str, JNI_FALSE) == NULL) {
+        printf("%s\n", "DeleteLocalRef删除new_str成功！");
+    }else{
+        printf("%s\n", "DeleteLocalRef删除new_str失败！");
+        printf("%s\n", (*env)->GetStringUTFChars(env, new_str, JNI_FALSE));
+    }
+}
+
+jstring global_ref;
+
+JNIEXPORT jstring JNICALL Java_com_jiangwei_JniTest1_createGlobalRef
+(JNIEnv* env, jobject jobj, jstring str){
+    global_ref = (*env)->NewGlobalRef(env, str);
+    return global_ref;
+}
+
+JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_deleteGlobalRef
+(JNIEnv* env, jobject jobj){
+    (*env)->DeleteGlobalRef(env,  global_ref);
+}
+
+JNIEXPORT jstring JNICALL Java_com_jiangwei_JniTest1_getGlobalRef
+(JNIEnv* env, jobject jobj){
+    return global_ref;
+}
+
+jstring weak_str;
+JNIEXPORT jstring JNICALL Java_com_jiangwei_JniTest1_createWeakGlobalRef
+(JNIEnv* env, jobject jobj, jstring str){
+    weak_str = (*env)->NewWeakGlobalRef(env, str);
+    return weak_str;
+}
+
+JNIEXPORT jstring JNICALL Java_com_jiangwei_JniTest1_getWeakGlobalRef
+(JNIEnv* env, jobject jobj){
+    return weak_str;
+}
+
+JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_deleteWeakGlobalRef
+(JNIEnv* env, jobject jobj){
+    jclass clz = (*env)->GetObjectClass(env, jobj);
+    
+    // 假设出现了异常，C的异常正常是不会在java中补获，但是会阻塞java后续的执行，ExceptionClear清除C本地的异常，不影响java后续的执行
+    jfieldID mid = (*env)->GetFieldID(env, clz, "woman", "Lcom/jiangwei/Person");
+    jthrowable exception = (*env)->ExceptionOccurred(env);
+    if (exception != NULL) {
+        (*env)->ExceptionClear(env);
+    }
+    (*env)->DeleteGlobalRef(env, weak_str);
+}
+
+JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_throwException
+(JNIEnv* env, jobject jobj){
+    // C中抛出异常，交给java处理
+    jclass clz = (*env)->FindClass(env, "java/lang/NullPointerException");
+    (*env)->ThrowNew(env, clz, "Native error Java_com_jiangwei_JniTest1_throwException");
+}
+
+
+void main(){
+    
 }
 
 

@@ -35,6 +35,30 @@ JNIEXPORT jstring JNICALL Java_com_jiangwei_JniTest1_getString
     
 JNIEXPORT jintArray JNICALL Java_com_jiangwei_JniTest1_sortArray
     (JNIEnv *, jobject, jintArray);
+    
+JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_deleteLocalRef
+    (JNIEnv *, jobject);
+    
+JNIEXPORT jstring JNICALL Java_com_jiangwei_JniTest1_createGlobalRef
+    (JNIEnv *, jobject, jstring);
+    
+JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_deleteGlobalRef
+    (JNIEnv *, jobject);
+    
+JNIEXPORT jstring JNICALL Java_com_jiangwei_JniTest1_getGlobalRef
+    (JNIEnv *, jobject);
+    
+JNIEXPORT jstring JNICALL Java_com_jiangwei_JniTest1_createWeakGlobalRef
+    (JNIEnv *, jobject, jstring);
+    
+JNIEXPORT jstring JNICALL Java_com_jiangwei_JniTest1_getWeakGlobalRef
+    (JNIEnv *, jobject);
+    
+JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_deleteWeakGlobalRef
+    (JNIEnv *, jobject);
+    
+JNIEXPORT void JNICALL Java_com_jiangwei_JniTest1_throwException
+    (JNIEnv *, jobject);
 #ifdef __cplusplus
 }
 #endif

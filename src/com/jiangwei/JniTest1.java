@@ -26,6 +26,22 @@ public class JniTest1 {
 
 	public native int[] sortArray(int[] array);
 
+	public native void deleteLocalRef();
+
+	public native String createGlobalRef(String str);
+
+	public native String getGlobalRef();
+
+	public native void deleteGlobalRef();
+
+	public native String createWeakGlobalRef(String str);
+
+	public native String getWeakGlobalRef();
+
+	public native void deleteWeakGlobalRef();
+	
+	public native void throwException();
+
 	static {
 		System.loadLibrary("jiangweijni");
 	}
@@ -64,6 +80,49 @@ public class JniTest1 {
 		for (int i = 0; i < newSort.length; i++) {
 			System.out.println(newSort[i]);
 		}
+
+		// 删除本地引用LocalRef
+		t.deleteLocalRef();
+
+		// 创建全局引用GlobalRef
+		String newStr = t.createGlobalRef("zhouwenkai");
+		System.out.println("创建全局new_str引用成功！new_str:" + newStr);
+
+		// 删除全局引用
+		t.deleteGlobalRef();
+
+		// 获取全局引用
+		String deleteStr = t.getGlobalRef();
+		try {
+			System.out.println(deleteStr);
+		} catch (NullPointerException e) {
+			System.out.println("删除全局引用成功！");
+		}
+
+		// 创建弱全局引用
+		String weakStr = t.createWeakGlobalRef("weakStr");
+		if (weakStr != null) {
+			System.out.println("成功创建弱引用：" + weakStr);
+		} else {
+			System.out.println("失败创建弱引用：" + weakStr);
+		}
+		// 删除弱全局引用
+		t.deleteWeakGlobalRef();
+		// 获取弱全局引用
+		try {
+			String delWeak = t.getWeakGlobalRef();
+			System.out.println(delWeak);
+		} catch (Exception e) {
+			System.out.println("删除弱引用成功!!");
+		}
+		// 抛出异常
+		try {
+			t.throwException();
+		} catch (Exception e) {
+			e.getMessage();
+			System.out.println("异常抛出成功！"+e.getMessage());
+		}
+
 	}
 
 	public int getInt(int i) {
